@@ -1,0 +1,62 @@
+﻿@inherits ComponentBase
+
+@inject IJSRuntime JSRuntime
+
+<span ref="@_Element">
+    <input type="text"
+           style="width: 100%"
+           data-provide="slider"
+           data-slider-min="@Min" data-slider-max="@Max"
+           data-slider-step="@Step" data-slider-value="@Value"
+           data-slider-tooltip="@Tooltip"
+           data-slider-ticks="@_Ticks" />
+</span>
+
+@functions {
+    private ElementRef _Element;
+    private DotNetObjectRef _Instance;
+
+    [Parameter] protected int Min { get; set; }
+    [Parameter] protected int Max { get; set; }
+    [Parameter] protected int Step { get; set; }
+    [Parameter] protected int Value { get; set; }
+
+    // tooltips are broken due to https://github.com/seiyria/bootstrap-slider/issues/689#issuecomment-461277376
+    [Parameter] protected TooltipMode Tooltip { get; set; }
+
+    [Parameter] protected int[] Ticks { get; set; }
+    private string _Ticks
+        => Ticks.Any() ? $"data-slider-ticks=\"[{string.Join(",", Ticks)}]\"" : "";
+
+    [JSInvokable]
+    public void SetValue(int value)
+    {
+        Value = value;
+
+        StateHasChanged();
+    }
+
+    public enum TooltipMode
+    {
+        Show,
+        Hide,
+        Always
+    }
+
+    protected override async Task OnAfterRenderAsync()
+    {
+        /*
+         * JS interop from OnInit did not work reliably as of Blazor 0.7, so we
+         * need to manually ensure this runs only once
+         */
+        if (_Instance == null)
+        {
+            _Instance = new DotNetObjectRef(this);
+
+            var initMethodName = $"componentFunctions.init{nameof(Slider)}";
+            await JSRuntime.InvokeAsync<bool>(initMethodName, _Element, _Instance);
+        }
+
+        await base.OnAfterRenderAsync();
+    }
+}
