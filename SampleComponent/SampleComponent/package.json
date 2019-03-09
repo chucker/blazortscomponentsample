@@ -1,0 +1,12 @@
+{
+  "version": "1.0.0",
+  "name": "asp.net",
+  "private": true,
+  "devDependencies": {
+    "@dotnet/jsinterop": "0.1.1",
+    "@types/bootstrap-slider": "^9.9.0",
+    "@types/jquery": "^3.0.0",
+    "bootstrap": "^4.3.1",
+    "jquery": "^3.0.0"
+  }
+}
