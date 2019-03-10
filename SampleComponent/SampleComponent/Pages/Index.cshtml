@@ -4,9 +4,24 @@
 
 <h1>Hello, world!</h1>
 
-Welcome to your new app.
+<p>Welcome to your new app.</p>
 
-Set how satisfied you are:
+<p>Set how satisfied you are:</p>
 
-<Slider Min="-30" Max="90" Step="10" Value="30" Tooltip="@Slider.TooltipMode.Always"
-        Ticks="@(new[] { -30, 0, 90 })" />
+<p>
+    <Slider Min="-30" Max="90" Step="10" bind-Value="@Value" Tooltip="@Slider.TooltipMode.Always"
+            Ticks="@(new[] { -30, 0, 90 })" />
+</p>
+
+<p>
+    <!-- the value here gets updated live from
+        
+         TS (Slider.ts) -> child component (Slider.cshtml) -> this component
+        
+        -->
+    @Value
+</p>
+
+@functions {
+    private int Value { get; set; } = 60;
+}

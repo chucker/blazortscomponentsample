@@ -12,6 +12,8 @@
            data-slider-ticks="@_Ticks" />
 </span>
 
+<p>@Value (child)</p>
+
 @functions {
     private ElementRef _Element;
     private DotNetObjectRef _Instance;
@@ -19,7 +21,9 @@
     [Parameter] protected int Min { get; set; }
     [Parameter] protected int Max { get; set; }
     [Parameter] protected int Step { get; set; }
+
     [Parameter] protected int Value { get; set; }
+    [Parameter] protected EventCallback<int> ValueChanged { get; set; }
 
     // tooltips are broken due to https://github.com/seiyria/bootstrap-slider/issues/689#issuecomment-461277376
     [Parameter] protected TooltipMode Tooltip { get; set; }
@@ -29,12 +33,11 @@
         => Ticks.Any() ? $"data-slider-ticks=\"[{string.Join(",", Ticks)}]\"" : "";
 
     [JSInvokable]
-    public void SetValue(int value)
+    public async void SetValue(int value)
     {
         Value = value;
-
-        StateHasChanged();
         Console.WriteLine($"Setting new slider value in C# (from JS): {value}");
+        await ValueChanged.InvokeAsync(value);
     }
 
     public enum TooltipMode
