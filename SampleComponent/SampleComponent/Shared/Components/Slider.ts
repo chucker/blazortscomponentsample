@@ -25,7 +25,10 @@ namespace SampleComponent.Shared.Components {
 
             var slider = jqElement.slider();
 
-            slider.on('slide', e => this.DotNetInstance.invokeMethod('SetValue', e.value));
+            slider.on('slide', e => {
+                console.log("Setting new slider value in JS: " + e.value);
+                this.DotNetInstance.invokeMethod('SetValue', e.value);
+            });
         }
     }
 }
